@@ -17,7 +17,8 @@ int main(int argc, char *argv[])
   }
   int N = 25;
   char buf[255];
-  word_count *map[N];
+  word_count **map;
+  map = calloc(sizeof(word_count *), N);
   FILE *fp;
   fp = fopen(argv[1], "r");
   char chunk;
@@ -83,10 +84,13 @@ validate_word:
     w->word = word;
     w->n = 1;
     map[n++] = w;
+    if (n >= N)
+    {
+      map = realloc(map, sizeof(word_count *) * (n + 1));
+    }
   }
-next_loop:
-  if (done == 0)
-    goto read_word;
+  if (n < 2 || wordOK == 0)
+    goto next_loop;
   int h = 0;
 outer_sort:
   h = 0;
@@ -105,11 +109,14 @@ inner_sort:
     goto inner_sort;
   if (sorted == 0)
     goto outer_sort;
+next_loop:
+  if (done == 0)
+    goto read_word;
   h = 0;
 read_map:
   printf("%s - %d\n", map[h]->word, map[h]->n);
   h++;
-  if (h < n)
+  if (h < (n < N ? n : N))
   {
     goto read_map;
   }

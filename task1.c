@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   short done = 0;
   char *word;
   short wordOK = 1;
-  char *bannedWords[] = {" ", "in", "the"};
+  char *bannedWords[] = {" ", "in", "the", "for", "and", "or", "of"};
   int bannedWordsCount = sizeof(bannedWords) / sizeof(char *);
 read_word:
   chunk = fgetc(fp);

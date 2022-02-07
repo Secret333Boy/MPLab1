@@ -45,7 +45,15 @@ read_word_end:
   word = calloc(i, sizeof(char));
   int j = 0;
 word_load:
-  word[j] = (buf[j] >= 65 && buf[j] <= 90) ? buf[j] + 32 : buf[j];
+  if ((buf[j] >= 97 && buf[j] <= 122) || (buf[j] >= 65 && buf[j] <= 90))
+  {
+    word[j] = (buf[j] >= 65 && buf[j] <= 90) ? buf[j] + 32 : buf[j];
+  }
+  else
+  {
+    i--;
+    word = realloc(word, sizeof(char) * i);
+  }
   buf[j] = EOF;
   j++;
   if (j < i)

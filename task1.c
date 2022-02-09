@@ -21,9 +21,10 @@ int main(int argc, char *argv[])
   map = calloc(sizeof(word_count *), N);
   FILE *fp;
   fp = fopen(argv[1], "r");
-  if (fp == NULL) {
+  if (fp == NULL)
+  {
     printf("Error while reading a file... Maybe typo in the name of file?");
-    return(1);
+    return (1);
   }
   char chunk;
   short i = 0;
@@ -49,7 +50,7 @@ read_word_end:
   word = calloc(i, sizeof(char));
   int j = 0;
 word_load:
-  if ((buf[j] >= 97 && buf[j] <= 122) || (buf[j] >= 65 && buf[j] <= 90))
+  if ((buf[j] >= 97 && buf[j] <= 122) || (buf[j] >= 65 && buf[j] <= 90) || buf[j] == '\'')
   {
     word[j] = (buf[j] >= 65 && buf[j] <= 90) ? buf[j] + 32 : buf[j];
   }

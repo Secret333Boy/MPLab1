@@ -21,6 +21,10 @@ int main(int argc, char *argv[])
   map = calloc(sizeof(word_count *), N);
   FILE *fp;
   fp = fopen(argv[1], "r");
+  if (fp == NULL) {
+    printf("Error while reading a file... Maybe typo in the name of file?");
+    return(1);
+  }
   char chunk;
   short i = 0;
   int n = 0;

@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
   int bannedWordsCount = sizeof(bannedWords) / sizeof(char *);
 read_word:
   chunk = fgetc(fp);
-  if (chunk == EOF || chunk == ' ' || chunk == '\n' || chunk == '\r')
+  if (!(chunk >= 97 && chunk <= 122) && !(chunk >= 65 && chunk <= 90) && chunk != '\'')
   {
     if (chunk == EOF)
       done = 1;
@@ -57,6 +57,9 @@ word_load:
   else
   {
     i--;
+    if (i < 1) {
+      goto next_loop;
+    }
     word = realloc(word, sizeof(char) * i);
   }
   buf[j] = EOF;

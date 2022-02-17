@@ -71,20 +71,23 @@ read_words:
       dict_item *item;
       n = 0;
       short found = 0;
-      for (n; n < items_count; n++)
+    find_in_index:
+      if (strcmp(index[n]->word, word) == 0)
       {
-        if (strcmp(index[n]->word, word) == 0)
+        if (page_count > index[n]->pages[index[n]->count - 1])
         {
-          if (page_count > index[n]->pages[index[n]->count - 1])
-          {
-            index[n]->pages = realloc(index[n]->pages, sizeof(int) * (index[n]->count + 1));
-            index[n]->pages[index[n]->count] = page_count;
-            index[n]->count++;
-          }
-          found = 1;
-          break;
+          index[n]->pages = realloc(index[n]->pages, sizeof(int) * (index[n]->count + 1));
+          index[n]->pages[index[n]->count] = page_count;
+          index[n]->count++;
         }
+        found = 1;
+        goto find_in_index_end;
       }
+
+      n++;
+      if (n < items_count)
+        goto find_in_index;
+    find_in_index_end:
       if (found == 0)
       {
         pages_list = calloc(sizeof(int), 1);
@@ -100,17 +103,21 @@ read_words:
         {
         sort:
           sorted = 1;
-          for (int k = items_count - 2; k >= 0; k--)
+          int k = items_count - 2;
+        bubble:
+        {
+          if (strcmp(index[k]->word, index[k + 1]->word) > 0)
           {
-            if (strcmp(index[k]->word, index[k + 1]->word) > 0)
-            {
-              dict_item *buf;
-              buf = index[k];
-              index[k] = index[k + 1];
-              index[k + 1] = buf;
-              sorted = 0;
-            }
+            dict_item *buf;
+            buf = index[k];
+            index[k] = index[k + 1];
+            index[k + 1] = buf;
+            sorted = 0;
           }
+        }
+          k--;
+          if (k >= 0)
+            goto bubble;
           if (sorted == 0)
             goto sort;
         }
@@ -137,20 +144,22 @@ next_loop:
   {
     goto read_page;
   }
-  for (i; i < items_count; i++)
+read_word_from_index:
+  if (index[i]->count <= IGNORE_COUNT)
   {
-    if (index[i]->count <= IGNORE_COUNT)
-    {
-      printf("%s - ", index[i]->word);
-      for (j; j < index[i]->count; j++)
-      {
-        printf("%d", index[i]->pages[j]);
-        if (j != index[i]->count - 1)
-          printf(", ");
-      }
-      printf("\n");
-      j = 0;
-    }
+    printf("%s - ", index[i]->word);
+  read_pages:
+    printf("%d", index[i]->pages[j]);
+    if (j != index[i]->count - 1)
+      printf(", ");
+    j++;
+    if (j < index[i]->count)
+      goto read_pages;
+    printf("\n");
+    j = 0;
   }
+  i++;
+  if (i < items_count)
+    goto read_word_from_index;
   return 0;
 }

@@ -66,6 +66,8 @@ word_load:
   j++;
   if (j < i)
     goto word_load;
+  word = realloc(word, sizeof(char) * (i + 1));
+  word[i] = '\0';
   j = 0;
   i = 0;
 
